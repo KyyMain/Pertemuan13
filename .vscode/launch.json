@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "FormMahasiswa",
+            "request": "launch",
+            "mainClass": "view.FormMahasiswa",
+            "projectName": "pertemuan13_44411ecb"
+        },
+        {
+            "type": "java",
+            "name": "Launch Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "classPaths": [
+                "lib/mysql-connector-j-8.0.31.jar"
+            ]
+        }
+    ]
+  }
