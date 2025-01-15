@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "view.Main",
+            "projectName": "pertemuan13_44411ecb"
+        },
+        {
+            "type": "java",
             "name": "FormMahasiswa",
             "request": "launch",
             "mainClass": "view.FormMahasiswa",

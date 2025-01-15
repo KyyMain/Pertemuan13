@@ -27,6 +27,32 @@ public class MahasiswaModel {
         }
         return list;
     }
+    public void addNilai(int idMahasiswa, String mataKuliah, double nilai) throws SQLException {
+        String query = "INSERT INTO nilai (id_mahasiswa, mata_kuliah, nilai) VALUES (?, ?, ?)";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, idMahasiswa);
+            stmt.setString(2, mataKuliah);
+            stmt.setDouble(3, nilai);
+            stmt.executeUpdate();
+        }
+    }
+public List<String> getNilaiByMahasiswaId(int mahasiswaId) throws SQLException {
+    List<String> nilaiList = new ArrayList<>();
+    String query = "SELECT mata_kuliah, nilai FROM nilai WHERE id_mahasiswa = ?";
+    try (Connection conn = Database.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+        stmt.setInt(1, mahasiswaId);
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                String mataKuliah = rs.getString("mata_kuliah");
+                double nilai = rs.getDouble("nilai");
+                nilaiList.add(mataKuliah + ": " + nilai);
+            }
+        }
+    }
+    return nilaiList;
+}
 
     public void addMahasiswa(String nama, String nim, String jurusan, int angkatan) throws SQLException {
         String checkQuery = "SELECT COUNT(*) FROM mahasiswa WHERE nim = ?";
@@ -35,14 +61,12 @@ public class MahasiswaModel {
         try (Connection conn = Database.getConnection();
              PreparedStatement checkStmt = conn.prepareStatement(checkQuery)) {
 
-            // Cek apakah NIM sudah ada
             checkStmt.setString(1, nim);
             ResultSet rs = checkStmt.executeQuery();
             if (rs.next() && rs.getInt(1) > 0) {
                 throw new SQLException("Mahasiswa dengan NIM ini sudah ada.");
             }
 
-            // Jika tidak ada, masukkan data baru
             try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
                 insertStmt.setString(1, nama);
                 insertStmt.setString(2, nim);
@@ -61,11 +85,9 @@ public class MahasiswaModel {
         try (Connection conn = Database.getConnection();
              PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery)) {
 
-            // Hapus data berdasarkan ID
             deleteStmt.setInt(1, id);
             deleteStmt.executeUpdate();
 
-            // Reset AUTO_INCREMENT jika tabel kosong
             try (Statement resetStmt = conn.createStatement()) {
                 resetStmt.executeUpdate(resetAutoIncrementQuery);
             }
